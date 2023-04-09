@@ -65,17 +65,17 @@ app.use(cors());
 app.use(express.json());
 app.use('/sample', sampleRoutes);
 
-mongoose.connect(process.env.MONGODB_URI || '', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, (err) => {
-  if (err) {
-	    console.error(err);
-			    process.exit(1);
-					  }
-
-						  const port = process.env.PORT || 3000;
-							  app.listen(port, () => {
-								    console.log(\`Server is running on port \$port\`);
-										  });
-									});
+mongoose
+	.connect(process.env.MONGODB_URI, (err) => {
+    	if (err) {
+	    	console.error(err);
+			process.exit(1);
+		}
+		const port = process.env.PORT || 3000;
+		app.listen(port, () => {
+		    console.log(\`Server is running on port \$port\`);
+		});
+});
 									
 EOL
 
@@ -161,52 +161,51 @@ export const getAllSamples = async (req: Request, res: Response): Promise<void> 
 
 export const createSample = async (req: Request, res: Response): Promise<void> => {
   try {
-   const sample = await SampleService.createSample(req.body);
-   res.status(201).json(sample);
-	  } catch (error: any) {
-													    res.status(500).json({ error: error.message });
-															  }
-														};
+		const sample = await SampleService.createSample(req.body);
+		res.status(201).json(sample);
+	} catch (error: any) {
+		res.status(500).json({ error: error.message });
+	}
+};
 
-														export const getSampleById = async (req: Request, res: Response): Promise<void> => {
-														  try {
-															    const sample = await SampleService.getSampleById(req.params.id);
-																	    if (sample) {
-																			      res.status(200).json(sample);
-																						    } else {
-																								      res.status(404).json({ error: 'Sample not found' });
-																											    }
-																													  } catch (error: any) {
-																														    res.status(500).json({ error: error.message });
-																																  }
-																															};
+export const getSampleById = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const sample = await SampleService.getSampleById(req.params.id);
+		if (sample) {
+			res.status(200).json(sample);
+		} else {
+			res.status(404).json({ error: 'Sample not found' });
+		} catch (error: any) {
+			res.status(500).json({ error: error.message });
+		}
+	};
 
-																															export const updateSample = async (req: Request, res: Response): Promise<void> => {
-																															  try {
-																																    const sample = await SampleService.updateSample(req.params.id, req.body);
-																																		    if (sample) {
-																																				      res.status(200).json(sample);
-																																							    } else {
-																																									      res.status(404).json({ error: 'Sample not found' });
-																																												    }
-																																														  } catch (error: any) {
-																																															    res.status(500).json({ error: error.message });
-																																																	  }
-																																																};
+export const updateSample = async (req: Request, res: Response): Promise<void> => {
+   try {
+	    const sample = await SampleService.updateSample(req.params.id, req.body);
+		if (sample) {
+			res.status(200).json(sample);
+		} else {
+			res.status(404).json({ error: 'Sample not found' });
+		}
+	} catch (error: any) {
+		res.status(500).json({ error: error.message });
+	}
+;
 
-																																																export const deleteSample = async (req: Request, res: Response): Promise<void> => {
-																																																  try {
-																																																	    const sample = await SampleService.deleteSample(req.params.id);
-																																																			    if (sample) {
-																																																					      res.status(200).json
-																																																								    }
-																																																										    if (sample) {
-																																																												      res.status(200).json(sample);
-																																																															    } else {
-																																																																	      res.status(404).json({ error: 'Sample not found' });
-																																																																				    }
-																																																																						  } catch (error: any) {
-																																																																							    res.status(500).json({ error: error.message });
-																																																																									  }
-																																																																								};
-																																																																								EOL
+export const deleteSample = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const sample = await SampleService.deleteSample(req.params.id);
+		if (sample) {
+			res.status(200).json
+		}
+		if (sample) {
+			res.status(200).json(sample);
+		} else {
+			res.status(404).json({ error: 'Sample not found' });
+		}
+	} catch (error: any) {
+		res.status(500).json({ error: error.message });
+	}
+};
+EOL
