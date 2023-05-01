@@ -14,7 +14,13 @@ cd "$project_name"
 npm init -y
 
 # Install dependencies
-npm install express typescript ts-node nodemon cors mongoose @types/node @types/express @types/cors @types/mongoose
+npm install express typescript ts-node nodemon cors @types/node @types/express @types/cors dotenv
+
+# Create environment variables file
+touch .env
+cat > .env <<EOL
+PORT=3000
+EOL
 
 # Create and configure tsconfig.json
 cat > tsconfig.json <<EOL
@@ -50,39 +56,31 @@ npx json -I -f package.json -e 'this.scripts={"start": "nodemon", "build": "tsc"
 
 # Create directories and files
 mkdir -p src/controllers src/models src/services src/routes
+
 # Create index.ts with a sample code
 cat > src/index.ts <<EOL
+import dotenv from "dotenv";
 import express from 'express';
 import cors from 'cors';
-import mongoose from 'mongoose';
-import { config } from 'dotenv';
 import sampleRoutes from './routes/sampleRoutes';
 
-config(); // Load environment variables
+dotenv.config(); // Load environment variables
+
+const port : number = process.env.PORT || 3000;
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/sample', sampleRoutes);
 
-mongoose
-	.connect(process.env.MONGODB_URI, (err) => {
-    	if (err) {
-	    	console.error(err);
-			process.exit(1);
-		}
-		const port = process.env.PORT || 3000;
-		app.listen(port, () => {
-		    console.log(\`Server is running on port \$port\`);
-		});
+app.listen(port, () => {
+   console.log(\`Server is running on port \${port}\`);
 });
-									
 EOL
+
 
 # Create a sample model
 cat > src/models/sample.ts <<EOL
-import { Schema, model } from 'mongoose';
-
 interface Sample {
   value: number;
   description: string;
@@ -90,39 +88,31 @@ interface Sample {
   category: string;
 }
 
-const sampleSchema = new Schema<Sample>({
-  value: { type: Number, required: true },
-  description: { type: String, required: true },
-  date: { type: Date, required: true },
-  category: { type: String, required: true },
-});
-
-const SampleModel = model<Sample>('Sample', sampleSchema);
-export { Sample, SampleModel };
+export { Sample };
 EOL
 
 # Create a sample service
 cat > src/services/sampleService.ts <<EOL
-import { Sample, SampleModel } from '../models/sample';
+import { Sample } from '../models/sample';
 
 const getAllSamples = (): Promise<Sample[]> => {
-  return SampleModel.find().exec();
+	return "";
 };
 
 const createSample = (sample: Sample): Promise<Sample> => {
-  return new SampleModel(sample).save();
+	return "";
 };
 
 const getSampleById = (id: string): Promise<Sample | null> => {
-  return SampleModel.findById(id).exec();
+	return "";
 };
 
 const updateSample = (id: string, sample: Sample): Promise<Sample | null> => {
-  return SampleModel.findByIdAndUpdate(id, sample, { new: true }).exec();
+	return "";
 };
 
 const deleteSample = (id: string): Promise<Sample | null> => {
-  return SampleModel.findByIdAndRemove(id).exec();
+	return "";
 };
 
 export { getAllSamples, createSample, getSampleById, updateSample, deleteSample };
@@ -175,7 +165,8 @@ export const getSampleById = async (req: Request, res: Response): Promise<void> 
 			res.status(200).json(sample);
 		} else {
 			res.status(404).json({ error: 'Sample not found' });
-		} catch (error: any) {
+		}
+	} catch (error: any) {
 			res.status(500).json({ error: error.message });
 		}
 	};
@@ -191,7 +182,7 @@ export const updateSample = async (req: Request, res: Response): Promise<void> =
 	} catch (error: any) {
 		res.status(500).json({ error: error.message });
 	}
-;
+};
 
 export const deleteSample = async (req: Request, res: Response): Promise<void> => {
 	try {
