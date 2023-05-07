@@ -14,7 +14,8 @@ cd "$project_name"
 npm init -y
 
 # Install dependencies
-npm install express typescript ts-node nodemon cors @types/node @types/express @types/cors dotenv
+npm i express cors dotenv
+npm i --save-dev typescript ts-node nodemon @types/node @types/express @types/cors eslint prettier eslint-plugin-import eslint-plugin-prettier eslint-plugin-simple-import-sort @typescript-eslint/eslint-plugin @typescript-eslint/parser
 
 # Create environment variables file
 touch .env
@@ -50,9 +51,43 @@ cat > nodemon.json <<EOL
 }
 EOL
 
+# setup linting
+cat > .eslintrc.json <<EOL
+{
+  "extends": [
+	    "plugin:@typescript-eslint/recommended",
+			"plugin:prettier/recommended",
+		  "prettier/@typescript-eslint"
+		  ],
+		  "plugins": ["import", "simple-import-sort"],
+		  "parser": "@typescript-eslint/parser",
+		  "parserOptions": {
+		   "ecmaVersion": 2021,
+													    "sourceType": "module"
+															  },
+																  "env": {
+																	    "node": true,
+																			    "es2021": true
+																					  },
+																						  "rules": {
+																							    "simple-import-sort/imports": "error",
+																									    "simple-import-sort/exports": "error"
+																											  }
+																										}
+EOL
+
+cat > .prettierrc.json <<EOL
+{
+	"semi": true,
+	"singleQuote": true,
+	"trailingComma": "all",
+	"printWidth": 120,
+	"tabWidth": 2
+}
+EOL
 
 # Update package.json with scripts
-npx json -I -f package.json -e 'this.scripts={"start": "nodemon", "build": "tsc", "serve": "node dist/index.js"}'
+npx json -I -f package.json -e 'this.scripts={ "dev": "nodemon --watch src --exec ts-node src/index.ts", "build": "tsc", "serve": "node dist/index.js", "lint": "eslint --ext .ts src/", "format": "prettier --write \"src/**/*.ts\"", "lint:fix": "eslint --ext .ts src/ --fix"}'
 
 # Create directories and files
 mkdir -p src/controllers src/models src/services src/routes
@@ -66,12 +101,11 @@ import sampleRoutes from './routes/sampleRoutes';
 
 dotenv.config(); // Load environment variables
 
-const port : number = process.env.PORT || 3000;
+const port : string = process.env.PORT || "3000";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use('/sample', sampleRoutes);
 
 app.listen(port, () => {
    console.log(\`Server is running on port \${port}\`);
@@ -96,23 +130,33 @@ cat > src/services/sampleService.ts <<EOL
 import { Sample } from '../models/sample';
 
 const getAllSamples = (): Promise<Sample[]> => {
-	return "";
+	return new Promise<string>((resolve, reject) => {
+		resolve("");
+	});
 };
 
 const createSample = (sample: Sample): Promise<Sample> => {
-	return "";
+	return new Promise<string>((resolve, reject) => {
+		resolve("");
+	});
 };
 
 const getSampleById = (id: string): Promise<Sample | null> => {
-	return "";
+	return new Promise<string>((resolve, reject) => {
+		resolve("");
+	});
 };
 
 const updateSample = (id: string, sample: Sample): Promise<Sample | null> => {
-	return "";
+	return new Promise<string>((resolve, reject) => {
+		resolve("");
+	});
 };
 
 const deleteSample = (id: string): Promise<Sample | null> => {
-	return "";
+	return new Promise<string>((resolve, reject) => {
+		resolve("");
+	});
 };
 
 export { getAllSamples, createSample, getSampleById, updateSample, deleteSample };
