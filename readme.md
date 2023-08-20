@@ -1,13 +1,13 @@
 # Project initializer
 
-The repository contains some simple bash script to setup projects with commonly used packages and folder structures. The purpose of the scripts is to help quickly get the mundane and boring part of starting the project out of the way so that we can focus on developing our core features.
+Quickly spin up projects using a shell script.
 
 ## Currently supporting
 
-* Express
-* React
+* Express (A simple version, and a version with some common packages installed)
 
-## Future plans to support for following projects
+## How to use
 
-* Next
-* Go
+1. Clone or copy the script to your local machine.
+2. Run the script in the parent folder of where you want the project to be located.
+3. Enter project name as prompt.
